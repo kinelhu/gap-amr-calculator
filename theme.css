@@ -1,0 +1,36 @@
+/*
+ * GAP AMR Calculator — Colour palette
+ * ────────────────────────────────────
+ * Edit this file to retheme the entire tool.
+ * All values below are CSS custom properties consumed by index.html.
+ *
+ * Source: stats-report-template.tex (teal/blue variant)
+ */
+
+:root {
+  /* ── Surfaces ── */
+  --bg:             #FFFFFF;  /* page background          */
+  --callout-bg:     #F0F9FA;  /* non-core field panels    */
+
+  /* ── Text ── */
+  --text-primary:   #1A1A1A;  /* body copy                */
+  --text-secondary: #6B6B6B;  /* captions, subtitles      */
+  --text-tertiary:  #9B9B9B;  /* placeholder, muted text  */
+
+  /* ── Borders ── */
+  --border:         #E0E0E0;  /* default dividers         */
+  --callout-border: #7FB3B5;  /* non-core panel borders   */
+
+  /* ── Accent (teal) — primary brand colour ── */
+  --accent:         #0D7377;
+  --accent-light:   #E8F4F5;  /* selected radio bg        */
+  --accent-dark:    #084B4E;  /* hover state, headings    */
+
+  /* ── Verdict colours ── */
+  --success:        #2D6A4F;  /* "Not AMR" text           */
+  --success-bg:     #EAF4EE;
+  --error:          #C75450;  /* "AMR — Clinical" text    */
+  --error-bg:       #FDECEA;
+  --amber:          #A06800;  /* "AMR — Subclinical" text */
+  --amber-bg:       #FFF8E7;
+}
