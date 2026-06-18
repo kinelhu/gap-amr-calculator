@@ -13,6 +13,17 @@ const CITATION_URL    = "";
 const SUBMIT_ENDPOINT = "";
 const APP_VERSION     = "0.1.0";
 
+// Computed once at startup — device type and browser locale for registry analytics.
+// Neither value identifies an individual; both are coarse aggregate signals.
+const DEVICE = (() => {
+  const touch = navigator.maxTouchPoints > 0;
+  if (touch && window.innerWidth < 768) return "mobile";
+  if (touch) return "tablet";
+  return "desktop";
+})();
+
+const LANG = navigator.language || "";
+
 
 // ── Citation link ──────────────────────────────────────────────────────────────
 (function initCitationLink() {
@@ -265,7 +276,12 @@ function updateResult() {
     : "Copy GAP code";
 
   // Store the current values for submission and printing
-  actionBtn.dataset.payload = JSON.stringify({ g, a, p, non_hla: nonHla, ps6rp, c, app_version: APP_VERSION });
+  actionBtn.dataset.payload = JSON.stringify({
+    g, a, p, non_hla: nonHla, ps6rp, c,
+    app_version: APP_VERSION,
+    device:      DEVICE,
+    lang:        LANG,
+  });
   actionBtn.dataset.code    = code;
   actionBtn.dataset.verdict = verdict;
   actionBtn.dataset.nonHla  = nonHla;
