@@ -176,19 +176,19 @@ const VERDICT_DESCRIPTIONS = {
 };
 
 // Human-readable labels for the print summary
-const G_LABELS = { "0": "G0 — not present", "1": "G1 — present" };
+const G_LABELS = { "0": "G0: not present", "1": "G1: present" };
 const A_LABELS = {
-  "0": "A0 — no HLA DSA",
-  "1": "A1 — present, strength not reported",
-  "2": "A2 — weak (<2 500 MFI)",
-  "3": "A3 — intermediate (2 500–8 000 MFI)",
-  "4": "A4 — strong (>8 000 MFI)",
+  "0": "A0: no HLA DSA",
+  "1": "A1: present, strength not reported",
+  "2": "A2: weak (<2 500 MFI)",
+  "3": "A3: intermediate (2 500-8 000 MFI)",
+  "4": "A4: strong (>8 000 MFI)",
 };
 const P_LABELS = {
-  "X": "PX — biopsy not done / inadequate",
-  "0": "P0 — absent",
-  "1": "P1 — present",
-  "2": "P2 — present + ACR / chronic rejection / LB",
+  "X": "PX: biopsy not done / inadequate",
+  "0": "P0: absent",
+  "1": "P1: present",
+  "2": "P2: present + ACR / chronic rejection / LB",
 };
 
 
@@ -305,7 +305,7 @@ document.getElementById("action-btn").addEventListener("click", async () => {
     await navigator.clipboard.writeText(code);
     status.textContent = "Copied to clipboard.";
   } catch {
-    status.textContent = "Copy failed — please select and copy the code manually.";
+    status.textContent = "Copy failed. Please select and copy the code manually.";
   }
 
   if (!SUBMIT_ENDPOINT) return;
@@ -333,7 +333,7 @@ document.getElementById("action-btn").addEventListener("click", async () => {
       btn.disabled = false;
     }
   } catch {
-    status.textContent = "Copied. Submission failed — network error.";
+    status.textContent = "Copied. Submission failed (network error).";
     btn.disabled = false;
   }
 });
