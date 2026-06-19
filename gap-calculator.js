@@ -300,7 +300,7 @@ document.getElementById("calc-btn").addEventListener("click", async () => {
 
   // Silent background submission — never interrupts the user
   if (SUBMIT_ENDPOINT) {
-    fetch(`${SUBMIT_ENDPOINT}/api/collections/assessments/records`, {
+    fetch(`${SUBMIT_ENDPOINT}/api/collections/gap_submissions/records`, {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
