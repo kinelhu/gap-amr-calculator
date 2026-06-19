@@ -10,7 +10,7 @@
 //                    Leave as "" — the submit action is hidden until this is set.
 //
 const CITATION_URL    = "";
-const SUBMIT_ENDPOINT = "";
+const SUBMIT_ENDPOINT = "https://gap.kinelhu.com";
 const APP_VERSION     = "0.1.0";
 
 // Computed once at startup — device type and browser locale for registry analytics.
