@@ -8,26 +8,16 @@ A coding tool for the ISHLT GAP system for pulmonary antibody-mediated rejection
 
 - Computes the GAP code (e.g. `G1 A3Z P1Y C0`) from the atomic findings of a single assessment
 - Classifies the assessment against the Table 2 truth table (Clinical AMR, Subclinical AMR, Not AMR, NFA, Pathology not assessed)
+- Downloads the result as a formatted PDF
 - Optionally submits anonymous, aggregate assessment records to a self-hosted research registry
 
-## How to use
+## Live version
 
-Open `index.html` in any modern browser — no installation, no build step.
+https://kinelhu.github.io/gap-amr-calculator/
 
-The live version is available at: https://kinelhu.github.io/gap-amr-calculator/
+## How to use locally
 
-## Configuring the registry backend
-
-Open `gap-calculator.js` and set the two constants near the top:
-
-```js
-const CITATION_URL    = "";   // DOI or URL of the ISHLT 2026 statement
-const SUBMIT_ENDPOINT = "";   // PocketBase base URL, e.g. "https://gap.yourdomain.org"
-```
-
-When `SUBMIT_ENDPOINT` is empty the Submit action is hidden. When set, the Copy/Submit button sends the assessment (G, A, P values and resulting code) to the registry. No patient identifiers are transmitted.
-
-See the backend architecture notes for details on the PocketBase + Caddy + Litestream setup.
+Open `index.html` in any modern browser. No installation, no build step, no internet required for the calculator itself.
 
 ## Files
 
@@ -35,14 +25,34 @@ See the backend architecture notes for details on the PocketBase + Caddy + Lites
 |---|---|
 | `index.html` | Page structure and CSS |
 | `gap-calculator.js` | Classification logic, self-test, UI wiring, PDF generation |
-| `theme.css` | Colour palette — edit here to retheme the tool |
+| `theme.css` | Colour palette (edit here to retheme the whole tool) |
+
+## Configuration
+
+Two constants at the top of `gap-calculator.js`:
+
+```js
+const CITATION_URL    = "";   // DOI or URL of the ISHLT 2026 statement once published
+const SUBMIT_ENDPOINT = "";   // PocketBase base URL, e.g. "https://gap.yourdomain.org"
+```
+
+- `CITATION_URL` empty: citation renders as plain text in the footer. Fill in once the DOI is available.
+- `SUBMIT_ENDPOINT` empty: the Submit action is hidden. When set, the Copy/Submit button sends the assessment (G, A, P and non-core values, resulting code, device type, browser locale) to the registry. No patient identifiers are transmitted.
+
+## Pending
+
+- [ ] Fill in `CITATION_URL` once the ISHLT 2026 paper DOI is published
+- [ ] Set up the backend (PocketBase + Caddy + Litestream on self-hosted server) and fill in `SUBMIT_ENDPOINT`
+- [ ] Configure GeoIP on the backend (Cloudflare proxy or Caddy + GeoLite2) to populate the `country` field in the registry
+
+See the internal architecture document for full backend setup notes.
 
 ## Logic verification
 
-The calculator runs a 12-case self-test on every page load (console output). Append `?debug` to the URL to display the full test table in the page.
+The calculator runs a 12-case self-test on every page load (result in the browser console). Append `?debug` to the URL to display the full test table in the page.
 
 ## Contact
 
 Kinan El Husseini MD PhD  
-Lung Transplant Unit, Hôpital Bichat-Claude Bernard, AP-HP, Paris, France  
+Lung Transplant Unit, Hopital Bichat-Claude Bernard, AP-HP, Paris, France  
 kinan.elhusseini@aphp.fr
