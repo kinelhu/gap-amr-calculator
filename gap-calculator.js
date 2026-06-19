@@ -286,6 +286,7 @@ document.getElementById("calc-btn").addEventListener("click", async () => {
   document.getElementById("result-empty").style.display   = "none";
   document.getElementById("result-content").style.display = "";
   document.getElementById("post-calc-actions").style.display = "";
+  document.getElementById("calc-btn").disabled = true;
 
   // Store values for copy and PDF buttons
   const store   = document.getElementById("calc-btn").dataset;
