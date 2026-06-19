@@ -219,6 +219,7 @@ function clearResult() {
   document.getElementById("result-content").style.display = "none";
   document.getElementById("post-calc-actions").style.display = "none";
   document.getElementById("action-status").textContent = "";
+  document.getElementById("calc-btn").style.display = "";
 }
 
 function refreshCalcBtn() {
@@ -286,7 +287,7 @@ document.getElementById("calc-btn").addEventListener("click", async () => {
   document.getElementById("result-empty").style.display   = "none";
   document.getElementById("result-content").style.display = "";
   document.getElementById("post-calc-actions").style.display = "";
-  document.getElementById("calc-btn").disabled = true;
+  document.getElementById("calc-btn").style.display = "none";
 
   // Store values for copy and PDF buttons
   const store   = document.getElementById("calc-btn").dataset;
