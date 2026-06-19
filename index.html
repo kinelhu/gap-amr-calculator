@@ -470,7 +470,7 @@
     <p><strong>This is a coding aid, not a clinical decision tool.</strong> It does not replace multidisciplinary assessment and should not be the sole basis for any clinical decision.</p>
 
     <div class="splash-data-notice">
-      <p><strong>Data collection:</strong> When you use the Submit button, anonymous data are sent to a research registry. This includes the values you entered (G, A, P and non-core elements) and the resulting code. <strong>No patient identifiers are collected or transmitted.</strong></p>
+      <p><strong>Data collection:</strong> Each time you generate a GAP code, anonymous data are sent to a research registry. This includes the values you entered (G, A, P and non-core elements) and the resulting code. <strong>No patient identifiers are collected or transmitted.</strong></p>
     </div>
 
     <p>Clicking the button below confirms that you have read this notice.</p>
@@ -721,11 +721,14 @@
       </div>
     </div>
 
-    <!-- Action buttons: copy/submit + print
-         Hidden until all core elements are selected. -->
-    <div class="action-section" id="action-section" style="display:none">
-      <button class="btn-action" id="action-btn" type="button">Copy GAP code</button>
-      <button class="btn-print" id="print-btn" type="button">Download as PDF</button>
+    <!-- Calculate button: always visible, enabled once G + A + P are selected.
+         Clicking classifies, shows the result, and submits to the registry. -->
+    <div class="action-section" id="action-section">
+      <button class="btn-action" id="calc-btn" type="button" disabled>Get GAP code</button>
+      <div id="post-calc-actions" style="display:none">
+        <button class="btn-print" id="copy-btn" type="button">Copy code</button>
+        <button class="btn-print" id="print-btn" type="button">Download as PDF</button>
+      </div>
       <p class="action-status" id="action-status" aria-live="polite"></p>
     </div>
 

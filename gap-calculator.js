@@ -175,7 +175,7 @@ const VERDICT_DESCRIPTIONS = {
     "No biopsy was performed or the specimen was inadequate. AMR classification by GAP criteria requires pathological assessment.",
 };
 
-// Human-readable labels for the print summary
+// Human-readable labels for the PDF summary
 const G_LABELS = { "0": "G0: not present", "1": "G1: present" };
 const A_LABELS = {
   "0": "A0: no HLA DSA",
@@ -205,6 +205,30 @@ document.getElementById("splash-ok").addEventListener("click", () => {
 });
 
 
+// ── Result state helpers ───────────────────────────────────────────────────────
+function refreshBiopsyState() {
+  const p = checkedValue("p");
+  const needsBiopsy = p === null || p === "X";
+  document.getElementById("ps6rp-box").classList.toggle("disabled-section", needsBiopsy);
+  document.getElementById("c-box").classList.toggle("disabled-section", needsBiopsy);
+}
+
+function clearResult() {
+  document.getElementById("result-panel").classList.remove("has-result");
+  document.getElementById("result-empty").style.display = "";
+  document.getElementById("result-content").style.display = "none";
+  document.getElementById("post-calc-actions").style.display = "none";
+  document.getElementById("action-status").textContent = "";
+}
+
+function refreshCalcBtn() {
+  const ready = checkedValue("g") !== null
+             && checkedValue("a") !== null
+             && checkedValue("p") !== null;
+  document.getElementById("calc-btn").disabled = !ready;
+}
+
+
 // ── Reset ──────────────────────────────────────────────────────────────────────
 document.getElementById("reset-btn").addEventListener("click", () => {
   document.querySelectorAll("input[type='radio']").forEach(el => {
@@ -215,12 +239,26 @@ document.getElementById("reset-btn").addEventListener("click", () => {
       el.checked = (el.value === "");
     }
   });
-  updateResult();
+  clearResult();
+  refreshBiopsyState();
+  refreshCalcBtn();
 });
 
 
-// ── Main update function ───────────────────────────────────────────────────────
-function updateResult() {
+// ── Input change: update biopsy state, hide stale result ──────────────────────
+function onInputChange() {
+  refreshBiopsyState();
+  clearResult();
+  refreshCalcBtn();
+}
+
+document.querySelectorAll("input[type='radio']").forEach(el => {
+  el.addEventListener("change", onInputChange);
+});
+
+
+// ── Get GAP code: classify + show result + silent background submit ────────────
+document.getElementById("calc-btn").addEventListener("click", async () => {
   const g      = checkedValue("g");
   const a      = checkedValue("a");
   const p      = checkedValue("p");
@@ -228,28 +266,11 @@ function updateResult() {
   const ps6rp  = checkedValue("ps6rp")  || "";
   const c      = checkedValue("c")      || "";
 
-  // Both p-S6RP and C4d require biopsy tissue
-  const needsBiopsy = p === null || p === "X";
-  document.getElementById("ps6rp-box").classList.toggle("disabled-section", needsBiopsy);
-  document.getElementById("c-box").classList.toggle("disabled-section", needsBiopsy);
-
-  const panel         = document.getElementById("result-panel");
-  const empty         = document.getElementById("result-empty");
-  const content       = document.getElementById("result-content");
-  const actionSection = document.getElementById("action-section");
-  const actionBtn     = document.getElementById("action-btn");
-  const actionStatus  = document.getElementById("action-status");
-
-  if (g === null || a === null || p === null) {
-    panel.classList.remove("has-result");
-    empty.style.display         = "";
-    content.style.display       = "none";
-    actionSection.style.display = "none";
-    return;
-  }
+  if (g === null || a === null || p === null) return;
 
   const { code, verdict } = classify(g, a, p, nonHla, ps6rp, c);
 
+  // Render result
   document.getElementById("result-code").textContent = code;
 
   const verdictEl = document.getElementById("result-verdict");
@@ -259,82 +280,49 @@ function updateResult() {
   badge.textContent = VERDICT_LABELS[verdict] || verdict;
   verdictEl.appendChild(badge);
 
-  document.getElementById("verdict-desc").textContent =
-    VERDICT_DESCRIPTIONS[verdict] || "";
+  document.getElementById("verdict-desc").textContent = VERDICT_DESCRIPTIONS[verdict] || "";
 
-  panel.classList.add("has-result");
-  empty.style.display   = "none";
-  content.style.display = "";
+  document.getElementById("result-panel").classList.add("has-result");
+  document.getElementById("result-empty").style.display   = "none";
+  document.getElementById("result-content").style.display = "";
+  document.getElementById("post-calc-actions").style.display = "";
 
-  actionSection.style.display = "";
-  actionBtn.disabled          = false;
-  actionBtn.style.display     = "";
-  actionStatus.textContent    = "";
+  // Store values for copy and PDF buttons
+  const store   = document.getElementById("calc-btn").dataset;
+  store.code    = code;
+  store.verdict = verdict;
+  store.nonHla  = nonHla;
+  store.ps6rp   = ps6rp;
+  store.cVal    = c;
+  store.g       = g;
+  store.a       = a;
+  store.p       = p;
 
-  actionBtn.textContent = SUBMIT_ENDPOINT
-    ? "Copy code and submit to registry"
-    : "Copy GAP code";
-
-  // Store the current values for submission and printing
-  actionBtn.dataset.payload = JSON.stringify({
-    g, a, p, non_hla: nonHla, ps6rp, c,
-    app_version: APP_VERSION,
-    device:      DEVICE,
-    lang:        LANG,
-  });
-  actionBtn.dataset.code    = code;
-  actionBtn.dataset.verdict = verdict;
-  actionBtn.dataset.nonHla  = nonHla;
-  actionBtn.dataset.ps6rp   = ps6rp;
-  actionBtn.dataset.cVal    = c;
-}
-
-document.querySelectorAll("input[type='radio']").forEach(el => {
-  el.addEventListener("change", updateResult);
+  // Silent background submission — never interrupts the user
+  if (SUBMIT_ENDPOINT) {
+    fetch(`${SUBMIT_ENDPOINT}/api/collections/assessments/records`, {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        g, a, p, non_hla: nonHla, ps6rp, c, code, verdict,
+        app_version: APP_VERSION,
+        device:      DEVICE,
+        lang:        LANG,
+      }),
+    }).catch(() => {});
+  }
 });
 
 
-// ── Action button: copy to clipboard + optional submit ─────────────────────────
-document.getElementById("action-btn").addEventListener("click", async () => {
-  const btn    = document.getElementById("action-btn");
-  const status = document.getElementById("action-status");
+// ── Copy button ────────────────────────────────────────────────────────────────
+document.getElementById("copy-btn").addEventListener("click", async () => {
   const code   = document.getElementById("result-code").textContent;
-
-  // Copy to clipboard first (always)
+  const status = document.getElementById("action-status");
   try {
     await navigator.clipboard.writeText(code);
-    status.textContent = "Copied to clipboard.";
+    status.textContent = "Copied.";
   } catch {
     status.textContent = "Copy failed. Please select and copy the code manually.";
-  }
-
-  if (!SUBMIT_ENDPOINT) return;
-
-  const payload = JSON.parse(btn.dataset.payload || "{}");
-  btn.disabled       = true;
-  status.textContent = "Copied. Submitting to registry...";
-
-  try {
-    const res = await fetch(
-      `${SUBMIT_ENDPOINT}/api/collections/gap_submissions/records`,
-      {
-        method:  "POST",
-        headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify(payload),
-      }
-    );
-
-    if (res.ok) {
-      btn.textContent    = "Submitted";
-      status.textContent = "Code copied and assessment submitted. Thank you.";
-    } else {
-      const err = await res.json().catch(() => ({}));
-      status.textContent = `Copied. Submission error ${res.status}: ${err.message || "please try again."}`;
-      btn.disabled = false;
-    }
-  } catch {
-    status.textContent = "Copied. Submission failed (network error).";
-    btn.disabled = false;
   }
 });
 
@@ -346,15 +334,15 @@ document.getElementById("print-btn").addEventListener("click", () => {
     return;
   }
 
-  const btn     = document.getElementById("action-btn");
-  const g       = checkedValue("g");
-  const a       = checkedValue("a");
-  const p       = checkedValue("p");
-  const nonHla  = btn.dataset.nonHla || "";
-  const ps6rp   = btn.dataset.ps6rp  || "";
-  const c       = btn.dataset.cVal   || "";
-  const code    = btn.dataset.code   || document.getElementById("result-code").textContent;
-  const verdict = btn.dataset.verdict || "";
+  const store  = document.getElementById("calc-btn").dataset;
+  const g      = store.g      || checkedValue("g");
+  const a      = store.a      || checkedValue("a");
+  const p      = store.p      || checkedValue("p");
+  const nonHla = store.nonHla || "";
+  const ps6rp  = store.ps6rp  || "";
+  const c      = store.cVal   || "";
+  const code   = store.code   || document.getElementById("result-code").textContent;
+  const verdict = store.verdict || "";
 
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
@@ -382,7 +370,6 @@ document.getElementById("print-btn").addEventListener("click", () => {
   };
 
   // Shorthand helpers
-  const rgb  = (arr) => arr;
   const fill = (arr) => doc.setFillColor(...arr);
   const ink  = (arr) => doc.setTextColor(...arr);
   const draw = (arr) => doc.setDrawColor(...arr);
@@ -526,7 +513,7 @@ document.getElementById("print-btn").addEventListener("click", () => {
 
   let fy = FOOT_Y + 4 + citLines.length * 3.5;
   doc.text(
-    "Contact for calculator: Kinan El Husseini MD PhD (Hôpital Bichat-Claude Bernard, AP-HP, Paris) kinan.elhusseini@aphp.fr",
+    "Contact for calculator: Kinan El Husseini MD PhD (Hopital Bichat-Claude Bernard, AP-HP, Paris) kinan.elhusseini@aphp.fr",
     M, fy
   );
 
