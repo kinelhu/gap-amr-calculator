@@ -9,7 +9,7 @@ A coding tool for the ISHLT GAP system for pulmonary antibody-mediated rejection
 - Computes the GAP code (e.g. `G1 A3Z P1Y C0`) from the atomic findings of a single assessment
 - Classifies the assessment against the Table 2 truth table (Clinical AMR, Subclinical AMR, Not AMR, NFA, Pathology not assessed)
 - Downloads the result as a formatted PDF
-- Optionally submits anonymous, aggregate assessment records to a self-hosted research registry
+- Submits anonymous, aggregate assessment records to a self-hosted research registry on every classification (country derived server-side via Cloudflare GeoIP — no IP stored)
 
 ## Live version
 
@@ -42,10 +42,6 @@ const SUBMIT_ENDPOINT = "";   // PocketBase base URL, e.g. "https://gap.yourdoma
 ## Pending
 
 - [ ] Fill in `CITATION_URL` once the ISHLT 2026 paper DOI is published
-- [ ] Set up the backend (PocketBase + Caddy + Litestream on self-hosted server) and fill in `SUBMIT_ENDPOINT`
-- [ ] Configure GeoIP on the backend (Cloudflare proxy or Caddy + GeoLite2) to populate the `country` field in the registry
-
-See the internal architecture document for full backend setup notes.
 
 ## Logic verification
 
