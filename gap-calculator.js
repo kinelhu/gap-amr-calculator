@@ -24,6 +24,18 @@ const DEVICE = (() => {
 
 const LANG = navigator.language || "";
 
+// Anonymous session token — generated once per browser, persisted in localStorage.
+// Allows counting distinct users without any identifying information.
+const SESSION_ID = (() => {
+  const key = "gap-session-id";
+  let id = localStorage.getItem(key);
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem(key, id);
+  }
+  return id;
+})();
+
 
 // ── Citation link ──────────────────────────────────────────────────────────────
 (function initCitationLink() {
@@ -310,6 +322,7 @@ document.getElementById("calc-btn").addEventListener("click", async () => {
         app_version: APP_VERSION,
         device:      DEVICE,
         lang:        LANG,
+        session_id:  SESSION_ID,
       }),
     }).catch(() => {});
   }
