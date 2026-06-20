@@ -39,10 +39,6 @@ const SUBMIT_ENDPOINT = "";   // PocketBase base URL, e.g. "https://api.yourdoma
 - `CITATION_URL` empty: citation renders as plain text in the footer. Fill in once the DOI is available.
 - `SUBMIT_ENDPOINT` empty: the Submit action is hidden. When set, each classification silently sends the assessment (G, A, P and non-core values, resulting code, device type, browser locale, anonymous session ID) to the registry. No patient identifiers are transmitted.
 
-## Pending
-
-- [ ] Fill in `CITATION_URL` once the ISHLT 2026 paper DOI is published
-
 ## Logic verification
 
 The calculator runs a 12-case self-test on every page load (result in the browser console). Append `?debug` to the URL to display the full test table in the page.
