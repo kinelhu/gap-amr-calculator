@@ -9,7 +9,7 @@
 //   SUBMIT_ENDPOINT: PocketBase base URL, e.g. "https://gap.yourdomain.org"
 //                    Leave as "" — the submit action is hidden until this is set.
 //
-const CITATION_URL    = "";
+const CITATION_URL    = "https://doi.org/10.1016/j.healun.2026.04.019";
 const SUBMIT_ENDPOINT = "https://api.kinelhu.com";
 const APP_VERSION     = "0.1.0";
 
