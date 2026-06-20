@@ -13,7 +13,7 @@ A coding tool for the ISHLT GAP system for pulmonary antibody-mediated rejection
 
 ## Live version
 
-https://kinelhu.github.io/gap-amr-calculator/
+https://gap.kinelhu.com
 
 ## How to use locally
 
@@ -33,11 +33,11 @@ Two constants at the top of `gap-calculator.js`:
 
 ```js
 const CITATION_URL    = "";   // DOI or URL of the ISHLT 2026 statement once published
-const SUBMIT_ENDPOINT = "";   // PocketBase base URL, e.g. "https://gap.yourdomain.org"
+const SUBMIT_ENDPOINT = "";   // PocketBase base URL, e.g. "https://api.yourdomain.org"
 ```
 
 - `CITATION_URL` empty: citation renders as plain text in the footer. Fill in once the DOI is available.
-- `SUBMIT_ENDPOINT` empty: the Submit action is hidden. When set, the Copy/Submit button sends the assessment (G, A, P and non-core values, resulting code, device type, browser locale) to the registry. No patient identifiers are transmitted.
+- `SUBMIT_ENDPOINT` empty: the Submit action is hidden. When set, each classification silently sends the assessment (G, A, P and non-core values, resulting code, device type, browser locale, anonymous session ID) to the registry. No patient identifiers are transmitted.
 
 ## Pending
 
@@ -49,6 +49,6 @@ The calculator runs a 12-case self-test on every page load (result in the browse
 
 ## Contact
 
-Kinan El Husseini MD PhD  
-Lung Transplant Unit, Hopital Bichat-Claude Bernard, AP-HP, Paris, France  
+Kinan El Husseini MD PhD
+Lung Transplant Unit, Hopital Bichat-Claude Bernard, AP-HP, Paris, France
 kinan.elhusseini@aphp.fr
