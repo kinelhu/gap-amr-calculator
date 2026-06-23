@@ -13,7 +13,7 @@ A coding tool for the ISHLT GAP system for pulmonary antibody-mediated rejection
 
 ## Live version
 
-https://gap.kinelhu.com
+https://lung-amr.com
 
 ## How to use locally
 
