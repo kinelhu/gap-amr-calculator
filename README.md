@@ -15,6 +15,10 @@ A coding tool for the ISHLT GAP system for pulmonary antibody-mediated rejection
 
 https://lung-amr.com
 
+## Cite this tool
+
+El Husseini K. *GAP AMR Calculator* [software]. 2026. https://doi.org/10.5281/zenodo.20816402
+
 ## How to use locally
 
 Open `index.html` in any modern browser. No installation, no build step, no internet required for the calculator itself.
