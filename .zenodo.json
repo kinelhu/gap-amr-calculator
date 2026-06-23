@@ -1,0 +1,14 @@
+{
+  "title": "GAP AMR Calculator",
+  "description": "Web-based coding tool for the ISHLT GAP system for pulmonary antibody-mediated rejection (AMR), implementing the 2026 ISHLT Scientific Statement classification logic.",
+  "creators": [
+    {
+      "name": "El Husseini, Kinan",
+      "affiliation": "Lung Transplant Unit, Hôpital Bichat-Claude Bernard, AP-HP, Paris, France",
+      "orcid": "0000-0001-9188-833X"
+    }
+  ],
+  "license": "mit",
+  "keywords": ["lung transplant", "AMR", "antibody-mediated rejection", "ISHLT", "GAP score"],
+  "upload_type": "software"
+}
