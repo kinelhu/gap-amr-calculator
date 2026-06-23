@@ -11,7 +11,7 @@
 //
 const CITATION_URL    = "https://doi.org/10.1016/j.healun.2026.04.019";
 const SUBMIT_ENDPOINT = "https://api.kinelhu.com";
-const APP_VERSION     = "0.1.0";
+const APP_VERSION     = "1.0.0";
 
 // Computed once at startup — device type and browser locale for registry analytics.
 // Neither value identifies an individual; both are coarse aggregate signals.
