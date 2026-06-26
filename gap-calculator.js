@@ -193,7 +193,7 @@ const VERDICT_DESCRIPTIONS = {
 // on-screen and PDF text must reflect that rather than asserting P is present.
 function describeVerdict(verdict, p) {
   if (verdict === "amr_clinical" && p === "0") {
-    return "Graft dysfunction and DSA are present, but no AMR-type pathological findings were identified on biopsy (P0). Per the GAP statement, consider a sampling problem or limitation — especially with intermediate or strong HLA DSA. Pathological confirmation is recommended.";
+    return "Graft dysfunction and DSA are present, but no AMR-type pathological findings were identified on biopsy (P0). Consider a sampling problem or limitation. Pathological confirmation is recommended.";
   }
   return VERDICT_DESCRIPTIONS[verdict] || "";
 }
