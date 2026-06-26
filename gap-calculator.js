@@ -170,7 +170,7 @@ const VERDICT_LABELS = {
   amr_clinical:        "Clinical AMR",
   amr_subclinical:     "Subclinical AMR",
   not_amr:             "Not AMR",
-  nfa:                 "No finding attributable to AMR",
+  nfa:                 "Need Further Assessment",
   path_not_assessed:   "Pathology not assessed",
 };
 
@@ -182,10 +182,21 @@ const VERDICT_DESCRIPTIONS = {
   not_amr:
     "The combination of findings does not meet the GAP criteria for antibody-mediated rejection.",
   nfa:
-    "Graft dysfunction is present but AMR criteria are not met. The cause of dysfunction is not attributable to AMR based on this assessment.",
+    "Graft dysfunction and AMR-type pathological findings are present, but no HLA DSA was detected. This combination needs further assessment — consider other etiologies (e.g., infection) and testing for non-HLA antibodies, C4d, and p-S6RP staining.",
   path_not_assessed:
     "No biopsy was performed or the specimen was inadequate. AMR classification by GAP criteria requires pathological assessment.",
 };
+
+// The amr_clinical description above assumes pathology is present (the P1/P2
+// route). For the P0 route — G1 + DSA + P0 — Table 2 reports plain "AMR" with a
+// sampling-limitation caveat and makes no claim of pathological findings, so the
+// on-screen and PDF text must reflect that rather than asserting P is present.
+function describeVerdict(verdict, p) {
+  if (verdict === "amr_clinical" && p === "0") {
+    return "Graft dysfunction and DSA are present, but no AMR-type pathological findings were identified on biopsy (P0). Per the GAP statement, consider a sampling problem or limitation — especially with intermediate or strong HLA DSA. Pathological confirmation is recommended.";
+  }
+  return VERDICT_DESCRIPTIONS[verdict] || "";
+}
 
 // Human-readable labels for the PDF summary
 const G_LABELS = { "0": "G0: not present", "1": "G1: present" };
@@ -293,7 +304,7 @@ document.getElementById("calc-btn").addEventListener("click", async () => {
   badge.textContent = VERDICT_LABELS[verdict] || verdict;
   verdictEl.appendChild(badge);
 
-  document.getElementById("verdict-desc").textContent = VERDICT_DESCRIPTIONS[verdict] || "";
+  document.getElementById("verdict-desc").textContent = describeVerdict(verdict, p);
 
   document.getElementById("result-panel").classList.add("has-result");
   document.getElementById("result-empty").style.display   = "none";
@@ -498,19 +509,9 @@ document.getElementById("print-btn").addEventListener("click", () => {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
   ink(C.gray);
-  const descLines = doc.splitTextToSize(VERDICT_DESCRIPTIONS[verdict] || "", CW);
+  const descLines = doc.splitTextToSize(describeVerdict(verdict, p), CW);
   doc.text(descLines, M, y);
   y += descLines.length * 5;
-
-  // Sampling caveat note (P0 + clinical AMR is an edge case worth flagging)
-  if (verdict === "amr_clinical" && p === "0") {
-    y += 5;
-    doc.setFont("helvetica", "italic");
-    doc.setFontSize(8.5);
-    const caveat = "Note: biopsy findings are absent (P0). Clinical AMR assignment assumes sampling error; pathological confirmation is recommended.";
-    const caveatLines = doc.splitTextToSize(caveat, CW);
-    doc.text(caveatLines, M, y);
-  }
 
   // ── Footer ────────────────────────────────────────────────────────────────────
   const FOOT_Y = 276;
